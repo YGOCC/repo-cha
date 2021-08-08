@@ -61,30 +61,30 @@ end
 local is_type, card_remcounter, duel_remcounter, effect_set_target_range, effect_set_reset, add_xyz_proc, add_xyz_proc_nlv, duel_overlay, duel_set_lp, duel_select_target, duel_banish, card_check_remove_overlay_card, is_reason, duel_check_tribute, select_tribute,card_sethighlander, card_is_facedown = 
 	Card.IsType, Card.RemoveCounter, Duel.RemoveCounter, Effect.SetTargetRange, Effect.SetReset, Auxiliary.AddXyzProcedure, Auxiliary.AddXyzProcedureLevelFree, Duel.Overlay, Duel.SetLP, Duel.SelectTarget, Duel.Remove, Card.CheckRemoveOverlayCard, Card.IsReason, Duel.CheckTribute, Duel.SelectTribute, Card.SetUniqueOnField, Card.IsFacedown
 
-dofile("expansions/script/proc_evolute.lua") --Evolutes
-dofile("expansions/script/proc_conjoint.lua") --Conjoints
-dofile("expansions/script/proc_pandemonium.lua") --Pandemoniums
-dofile("expansions/script/proc_polarity.lua") --Polarities
-dofile("expansions/script/proc_spatial.lua") --Spatials
-dofile("expansions/script/proc_corona.lua") --Coronas
-dofile("expansions/script/proc_skill.lua") --Skills
-dofile("expansions/script/proc_deckmaster.lua") --Deck Masters
-dofile("expansions/script/proc_bigbang.lua") --Bigbangs
-dofile("expansions/script/proc_timeleap.lua") --Time Leaps
-dofile("expansions/script/proc_relay.lua") --Relays
-dofile("expansions/script/proc_harmony.lua") --Harmonies
-dofile("expansions/script/proc_accent.lua") --Accents
-dofile("expansions/script/proc_bypath.lua") --Bypaths
-dofile("expansions/script/proc_toxia.lua") --Toxias
-dofile("expansions/script/proc_annotee.lua") --Annotees
-dofile("expansions/script/proc_chroma.lua") --Chromas
-dofile("expansions/script/proc_perdition.lua") --Perditions
-dofile("expansions/script/proc_impure.lua") --Impures
-dofile("expansions/script/proc_runic.lua") --Runic
-dofile("expansions/script/proc_magick.lua") --Magick
-dofile("expansions/script/proc_xros.lua") --Xroses
-dofile("expansions/script/muse_proc.lua") --"Muse"
-dofile("expansions/script/tables.lua") --Special Tables
+-- dofile("expansions/script/proc_evolute.lua") --Evolutes
+-- dofile("expansions/script/proc_conjoint.lua") --Conjoints
+-- dofile("expansions/script/proc_pandemonium.lua") --Pandemoniums
+-- dofile("expansions/script/proc_polarity.lua") --Polarities
+-- dofile("expansions/script/proc_spatial.lua") --Spatials
+-- dofile("expansions/script/proc_corona.lua") --Coronas
+-- dofile("expansions/script/proc_skill.lua") --Skills
+-- dofile("expansions/script/proc_deckmaster.lua") --Deck Masters
+-- dofile("expansions/script/proc_bigbang.lua") --Bigbangs
+-- dofile("expansions/script/proc_timeleap.lua") --Time Leaps
+-- dofile("expansions/script/proc_relay.lua") --Relays
+-- dofile("expansions/script/proc_harmony.lua") --Harmonies
+-- dofile("expansions/script/proc_accent.lua") --Accents
+-- dofile("expansions/script/proc_bypath.lua") --Bypaths
+-- dofile("expansions/script/proc_toxia.lua") --Toxias
+-- dofile("expansions/script/proc_annotee.lua") --Annotees
+-- dofile("expansions/script/proc_chroma.lua") --Chromas
+-- dofile("expansions/script/proc_perdition.lua") --Perditions
+-- dofile("expansions/script/proc_impure.lua") --Impures
+-- dofile("expansions/script/proc_runic.lua") --Runic
+-- dofile("expansions/script/proc_magick.lua") --Magick
+-- dofile("expansions/script/proc_xros.lua") --Xroses
+-- dofile("expansions/script/muse_proc.lua") --"Muse"
+-- dofile("expansions/script/tables.lua") --Special Tables
 
 Card.IsReason=function(c,rs)
 	local cusrs=rs>>32
@@ -94,6 +94,8 @@ Card.IsReason=function(c,rs)
 	return c:IsCustomReason(cusrs)
 end
 Card.IsType=function(c,tpe,scard,sumtype,p)
+	-- Debug.Message('tpe' .. tpe)
+	if not tpe then return end
 	local custpe=tpe>>32
 	local otpe=tpe&0xffffffff
 	
@@ -351,7 +353,7 @@ end
 Card.SetUniqueOnField=function(c,s,o,code,loc)
 	if not loc then loc=LOCATION_ONFIELD end
 	card_sethighlander(c,s,o,code,loc)
-	if aux.GetValueType(code)=="number" then aux.AddCodeList(c,code) end
+	-- if aux.GetValueType(code)=="number" then aux.AddCodeList(c,code) end
 end
 Card.IsFacedown=function(c)
 	if c:IsLocation(LOCATION_REMOVED) and c:GetFlagEffect(FLAG_FAKE_FU_BANISH)>0 then
@@ -1519,3 +1521,5 @@ if not global_duel_effect_table_global_check then
 							return Duel.register_global_duel_effect_table(e,tp)
 	end
 end
+
+Duel.LoadScript("proc_evolute.lua")

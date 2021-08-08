@@ -1,5 +1,15 @@
---created by Chahine, coded by Lyris
---Not yet finalized values
+--created by Chahine, coded by Lyris, edited by Kedy
+-- Duel.LoadScript("init.lua")
+if not aux.EvoluteProcedure then
+	aux.EvoluteProcedure = {}
+	Evolute = aux.EvoluteProcedure
+end
+
+if not Evolute then
+	Evolute = aux.EvoluteProcedure
+end
+
+
 --Custom constants
 EFFECT_STAGE						=388		--
 EFFECT_CANNOT_BE_EVOLUTE_MATERIAL	=389	 --
@@ -16,31 +26,38 @@ SUMMON_TYPE_EVOLUTE					=SUMMON_TYPE_SPECIAL+388
 
 REASON_EVOLUTE						=0x10000000
 
---Custom Type Table
-Auxiliary.Evolutes={} --number as index = card, card as index = function() is_xyz
-table.insert(aux.CannotBeEDMatCodes,EFFECT_CANNOT_BE_EVOLUTE_MATERIAL)
-
 --overwrite constants
 TYPE_EXTRA							=TYPE_EXTRA|TYPE_EVOLUTE
+
+
+
+--Custom Type Table
+Evolute.Evolutes={} --number as index = card, card as index = function() is_xyz
+table.insert(aux.CannotBeEDMatCodes,EFFECT_CANNOT_BE_EVOLUTE_MATERIAL)
+
+
 
 --overwrite functions
 local get_rank, get_orig_rank, prev_rank_field, is_rank, is_rank_below, is_rank_above, get_type, get_orig_type, get_prev_type_field = 
 	Card.GetRank, Card.GetOriginalRank, Card.GetPreviousRankOnField, Card.IsRank, Card.IsRankBelow, Card.IsRankAbove, Card.GetType, Card.GetOriginalType, Card.GetPreviousTypeOnField
 
 Card.GetRank=function(c)
-	if Auxiliary.Evolutes[c] then return 0 end
+	if Evolute.Evolutes[c] then return 0 end
 	return get_rank(c)
 end
+
 Card.GetOriginalRank=function(c)
-	if Auxiliary.Evolutes[c] and not Auxiliary.Evolutes[c]() then return 0 end
+	if Evolute.Evolutes[c] and not Evolute.Evolutes[c]() then return 0 end
 	return get_orig_rank(c)
 end
+
 Card.GetPreviousRankOnField=function(c)
-	if Auxiliary.Evolutes[c] and not Auxiliary.Evolutes[c]() then return 0 end
+	if Evolute.Evolutes[c] and not Evolute.Evolutes[c]() then return 0 end
 	return prev_rank_field(c)
 end
+
 Card.IsRank=function(c,...)
-	if Auxiliary.Evolutes[c] and not Auxiliary.Evolutes[c]() then return false end
+	if Evolute.Evolutes[c] and not Evolute.Evolutes[c]() then return false end
 	local funs={...}
 	for key,value in pairs(funs) do
 		if c:GetRank()==value then return true end
@@ -48,48 +65,54 @@ Card.IsRank=function(c,...)
 	return false
 	--return is_rank(c,rk)
 end
+
 Card.IsRankBelow=function(c,rk)
-	if Auxiliary.Evolutes[c] and not Auxiliary.Evolutes[c]() then return false end
+	if Evolute.Evolutes[c] and not Evolute.Evolutes[c]() then return false end
 	return is_rank_below(c,rk)
 end
+
 Card.IsRankAbove=function(c,rk)
-	if Auxiliary.Evolutes[c] and not Auxiliary.Evolutes[c]() then return false end
+	if Evolute.Evolutes[c] and not Evolute.Evolutes[c]() then return false end
 	return is_rank_above(c,rk)
 end
+
 Card.GetType=function(c,scard,sumtype,p)
 	local tpe=scard and get_type(c,scard,sumtype,p) or get_type(c)
-	if Auxiliary.Evolutes[c] then
+	if Evolute.Evolutes[c] then
 		tpe=tpe|TYPE_EVOLUTE
-		if not Auxiliary.Evolutes[c]() then
-			tpe=tpe&~TYPE_XYZ
-		end
-	end
-	return tpe
-end
-Card.GetOriginalType=function(c)
-	local tpe=get_orig_type(c)
-	if Auxiliary.Evolutes[c] then
-		tpe=tpe|TYPE_EVOLUTE
-		if not Auxiliary.Evolutes[c]() then
-			tpe=tpe&~TYPE_XYZ
-		end
-	end
-	return tpe
-end
-Card.GetPreviousTypeOnField=function(c)
-	local tpe=get_prev_type_field(c)
-	if Auxiliary.Evolutes[c] then
-		tpe=tpe|TYPE_EVOLUTE
-		if not Auxiliary.Evolutes[c]() then
+		if not Evolute.Evolutes[c]() then
 			tpe=tpe&~TYPE_XYZ
 		end
 	end
 	return tpe
 end
 
+Card.GetOriginalType=function(c)
+	local tpe=get_orig_type(c)
+	if Evolute.Evolutes[c] then
+		tpe=tpe|TYPE_EVOLUTE
+		if not Evolute.Evolutes[c]() then
+			tpe=tpe&~TYPE_XYZ
+		end
+	end
+	return tpe
+end
+
+Card.GetPreviousTypeOnField=function(c)
+	local tpe=get_prev_type_field(c)
+	if Evolute.Evolutes[c] then
+		tpe=tpe|TYPE_EVOLUTE
+		if not Evolute.Evolutes[c]() then
+			tpe=tpe&~TYPE_XYZ
+		end
+	end
+	return tpe
+end
+
+
 --Custom Functions
 function Card.GetStage(c)
-	if not Auxiliary.Evolutes[c] then return 0 end
+	if not Evolute.Evolutes[c] then return 0 end
 	local te=c:IsHasEffect(EFFECT_STAGE)
 	if type(te:GetValue())=='function' then
 		return te:GetValue()(te,c)
@@ -97,23 +120,28 @@ function Card.GetStage(c)
 		return te:GetValue()
 	end
 end
+
 function Card.IsStage(c,...)
 	for stage in pairs({...}) do
 		if c:GetStage()==stage then return true end
 	end
 	return false
 end
+
 function Card.IsStageAbove(c,stage)
 	return c:GetStage()>=stage
 end
+
 function Card.IsStageBelow(c,stage)
 	local stg=c:GetStage()
 	return stg>0 and stg<=stage
 end
+
 GLOBAL_E_COUNTER={0,0}
 GLOBAL_E_COUNTER[0]=0
 GLOBAL_E_COUNTER[1]=0
-function Auxiliary.AddECounter(p,ct)
+
+function Evolute.AddECounter(p,ct)
 	GLOBAL_E_COUNTER[p]=GLOBAL_E_COUNTER[p]+ct
 	Duel.Hint(HINT_NUMBER,p,GLOBAL_E_COUNTER[p])
 	Duel.Hint(HINT_NUMBER,1-p,GLOBAL_E_COUNTER[p])
@@ -121,18 +149,22 @@ function Auxiliary.AddECounter(p,ct)
 	--Duel.Hint(HINT_MESSAGE,p,1550,GLOBAL_E_COUNTER[p])
 	--Duel.Hint(HINT_MESSAGE,1-p,1550,GLOBAL_E_COUNTER[p])
 end
-function Auxiliary.GetECounter(p)
+
+function Evolute.GetECounter(p)
 	return GLOBAL_E_COUNTER[p]
 end
+
 function Card.AddEC(c,ct,p)
 	c:AddCounter(0x1088,ct)
-	if p then Auxiliary.AddECounter(p,ct) end
+	if p then Evolute.AddECounter(p,ct) end
 	--TODO: Remove once all Evolutes are updated
 	--c:AddCounter(0x88,ct)
 end
+
 function Card.GetEC(c)
 	return c:GetCounter(0x1088)
 end
+
 function Card.RefillEC(c)
 	local val=0
 	if c:IsHasEffect(EFFECT_CONVERGENT_EVOLUTE) then
@@ -146,26 +178,31 @@ function Card.RefillEC(c)
 	c:AddEC(val,c:GetControler())
 	return val
 end
+
 function Card.IsCanRemoveEC(c,p,ct,r)
---  if Auxiliary.GetECounter(p)>=ct then return true end
+--  if Evolute.GetECounter(p)>=ct then return true end
 	return c:IsCanRemoveCounter(p,0x1088,ct,REASON_COST)
 end
+
 function Duel.IsCanRemoveEC(p,s,o,ct,r)
---  if Auxiliary.GetECounter(p)>=ct then return true end
+--  if Evolute.GetECounter(p)>=ct then return true end
 	return Duel.IsCanRemoveCounter(p,s,o,0x1088,ct,r)
 end
+
 function Card.RemoveEC(c,p,ct,r)
-	if Auxiliary.GetECounter(p)>0 then
-		Auxiliary.AddECounter(p,-ct)
+	if Evolute.GetECounter(p)>0 then
+		Evolute.AddECounter(p,-ct)
 	end
 	if ct>0 then c:RemoveCounter(p,0x1088,ct,r) end
 end
+
 function Duel.RemoveEC(p,s,o,ct,r)
-	if Auxiliary.GetECounter(p)>=ct then
-		Auxiliary.AddECounter(p,-ct)
+	if Evolute.GetECounter(p)>=ct then
+		Evolute.AddECounter(p,-ct)
 	end
 	if ct>0 then Duel.RemoveCounter(p,s,o,0x1088,ct,r) end
 end
+
 function Card.IsCanBeEvoluteMaterial(c,ec)
 	if c:IsControler(1-ec:GetControler()) or not c:IsLocation(LOCATION_MZONE) or (not c:IsHasEffect(EFFECT_EVOLUTE_LEVEL) and c:GetLevel()<=0 and c:GetRank()<=0 and not c:IsStatus(STATUS_NO_LEVEL)) then
 		local tef1={c:IsHasEffect(EFFECT_EXTRA_EVOLUTE_MATERIAL,tp)}
@@ -193,13 +230,15 @@ function Card.IsCanBeEvoluteMaterial(c,ec)
 	end
 	return true
 end
-function Auxiliary.AddOrigEvoluteType(c,isxyz)
-	table.insert(Auxiliary.Evolutes,c)
-	Auxiliary.Customs[c]=true
+
+function Evolute.AddOrigEvoluteType(c,isxyz)
+	table.insert(Evolute.Evolutes,c)
+	aux.Customs[c]=true
 	local isxyz=isxyz==nil and false or isxyz
-	Auxiliary.Evolutes[c]=function() return isxyz end
+	Evolute.Evolutes[c]=function() return isxyz end
 end
-function Auxiliary.AddEvoluteProc(c,echeck,stage,...)
+
+function Evolute.AddEvoluteProc(c,echeck,stage,...)
 	--echeck - extra check after everything is settled, stage - Evolute "level"
 	--... format - any number of materials + optional material - min, max (min can be 0, max can be nil which will set it to 99)	use aux.TRUE for generic materials
 	if c:IsStatus(STATUS_COPYING_EFFECT) then return end
@@ -236,7 +275,7 @@ function Auxiliary.AddEvoluteProc(c,echeck,stage,...)
 	e0a:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_CONTINUOUS)
 	e0a:SetCode(EVENT_FLIP)
 	e0a:SetProperty(EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_UNCOPYABLE)
-	e0a:SetOperation(Auxiliary.RestoreEC)
+	e0a:SetOperation(Evolute.RestoreEC)
 	c:RegisterEffect(e0a)
 	local e0b=Effect.CreateEffect(c)
 	e0b:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
@@ -244,7 +283,7 @@ function Auxiliary.AddEvoluteProc(c,echeck,stage,...)
 	e0b:SetRange(LOCATION_MZONE)
 	e0b:SetProperty(EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_UNCOPYABLE)
 	e0b:SetLabelObject(e0a)
-	e0b:SetOperation(Auxiliary.StoreEC)
+	e0b:SetOperation(Evolute.StoreEC)
 	c:RegisterEffect(e0b)
 	local e0c=e0b:Clone()
 	e0c:SetCode(EVENT_CHAIN_SOLVED)
@@ -253,16 +292,16 @@ function Auxiliary.AddEvoluteProc(c,echeck,stage,...)
 	e1:SetType(EFFECT_TYPE_SINGLE)
 	e1:SetProperty(EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_UNCOPYABLE)
 	e1:SetCode(EFFECT_STAGE)
-	e1:SetValue(Auxiliary.StageVal(stage))
+	e1:SetValue(Evolute.StageVal(stage))
 	c:RegisterEffect(e1)
 	local e2=Effect.CreateEffect(c)
 	e2:SetType(EFFECT_TYPE_FIELD)
 	e2:SetCode(EFFECT_SPSUMMON_PROC)
 	e2:SetProperty(EFFECT_FLAG_UNCOPYABLE+EFFECT_FLAG_CANNOT_DISABLE)
 	e2:SetRange(LOCATION_EXTRA)
-	e2:SetCondition(Auxiliary.EvoluteCondition(echeck,extramat,min,max,gcheck,table.unpack(list)))
-	e2:SetTarget(Auxiliary.EvoluteTarget(echeck,extramat,min,max,gcheck,table.unpack(list)))
-	e2:SetOperation(Auxiliary.EvoluteOperation)
+	e2:SetCondition(Evolute.EvoluteCondition(echeck,extramat,min,max,gcheck,table.unpack(list)))
+	e2:SetTarget(Evolute.EvoluteTarget(echeck,extramat,min,max,gcheck,table.unpack(list)))
+	e2:SetOperation(Evolute.EvoluteOperation)
 	e2:SetValue(SUMMON_TYPE_EVOLUTE)
 	c:RegisterEffect(e2)
 	if type(echeck)=='string' and echeck=="Convergent" then
@@ -277,7 +316,7 @@ function Auxiliary.AddEvoluteProc(c,echeck,stage,...)
 		ge1:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
 		ge1:SetProperty(EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_IGNORE_IMMUNE)
 		ge1:SetCode(EVENT_SPSUMMON_SUCCESS)
-		ge1:SetOperation(Auxiliary.EvoluteCounter)
+		ge1:SetOperation(Evolute.EvoluteCounter)
 		Duel.RegisterEffect(ge1,0)
 		local ge2=Effect.GlobalEffect()
 		ge2:SetType(EFFECT_TYPE_FIELD)
@@ -291,8 +330,8 @@ function Auxiliary.AddEvoluteProc(c,echeck,stage,...)
 		ge3:SetType(EFFECT_TYPE_CONTINUOUS+EFFECT_TYPE_FIELD)
 		ge3:SetProperty(EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_IGNORE_IMMUNE)
 		ge3:SetCode(EFFECT_RCOUNTER_REPLACE+0x88)
-		ge3:SetCondition(Auxiliary.ECounterUseCon)
-		ge3:SetOperation(Auxiliary.ECounterUseOp)
+		ge3:SetCondition(Evolute.ECounterUseCon)
+		ge3:SetOperation(Evolute.ECounterUseOp)
 		Duel.RegisterEffect(ge3,0)
 		--Cannot be Summoned Face-down
 		--local ge4=Effect.CreateEffect(c)
@@ -300,42 +339,49 @@ function Auxiliary.AddEvoluteProc(c,echeck,stage,...)
 		--ge4:SetProperty(EFFECT_FLAG_PLAYER_TARGET)
 		--ge4:SetCode(EFFECT_CANNOT_SPECIAL_SUMMON)
 		--ge4:SetTargetRange(1,1)
-		--ge4:SetTarget(Auxiliary.FaceDownEvoluteLimit)
+		--ge4:SetTarget(Evolute.FaceDownEvoluteLimit)
 		--Duel.RegisterEffect(ge4,tp)
 	end
 end
+
 --Cannot be Summoned Face-down
--- function Auxiliary.FaceDownEvoluteLimit(e,c,sump,sumtype,sumpos,targetp,se)
+-- function Evolute.FaceDownEvoluteLimit(e,c,sump,sumtype,sumpos,targetp,se)
 -- return (c:IsType(TYPE_EVOLUTE) and (sumpos==POS_FACEDOWN_ATTACK or sumpos==POS_FACEDOWN_DEFENSE))
 -- end
-function Auxiliary.StoreEC(e)
+function Evolute.StoreEC(e)
 	local c=e:GetHandler()
 	if c:IsFaceup() then
 		e:GetLabelObject():SetLabel(c:GetEC())
 	end
 end
-function Auxiliary.RestoreEC(e)
+
+function Evolute.RestoreEC(e)
 	local v=e:GetLabel()
 	if v>0 then e:GetHandler():AddEC(v,tp) end
 end
+
 --E-C Replace
-function Auxiliary.ECounterUseCon(e,tp,eg,ep,ev,re,r,rp)
-	return Auxiliary.GetECounter(tp)>=ev
+function Evolute.ECounterUseCon(e,tp,eg,ep,ev,re,r,rp)
+	return Evolute.GetECounter(tp)>=ev
 end
-function Auxiliary.ECounterUseOp(e,tp,eg,ep,ev,re,r,rp)
-	Auxiliary.AddECounter(tp,-ev)
+
+function Evolute.ECounterUseOp(e,tp,eg,ep,ev,re,r,rp)
+	Evolute.AddECounter(tp,-ev)
 end
-function Auxiliary.StageVal(stage)
+
+function Evolute.StageVal(stage)
 	return  function(e,c)
 				local stage=stage
 				--insert modifications here
 				return stage
 			end
 end
+
 function Card.GetValueForEvolute(c,ec)
-	return Auxiliary.EvoluteValue(c,ec)
+	return Evolute.EvoluteValue(c,ec)
 end
-function Auxiliary.EvoluteValue(c,ec)
+
+function Evolute.EvoluteValue(c,ec)
 	local lv=c:GetLevel()
 	local rk=c:GetRank()
 	if c:IsHasEffect(EFFECT_EVOLUTE_LEVEL) then
@@ -350,7 +396,8 @@ function Auxiliary.EvoluteValue(c,ec)
 		return rk+0x10000*lv
 	end
 end
-function Auxiliary.EvoluteRecursiveFilter(c,tp,sg,mg,ec,ct,minc,maxc,gcheck,...)
+
+function Evolute.EvoluteRecursiveFilter(c,tp,sg,mg,ec,ct,minc,maxc,gcheck,...)
 	sg:AddCard(c)
 	if not (c.EvoFakeMaterial and c.EvoFakeMaterial()) then ct=ct+1 end
 	local funs,max,chk={...},0
@@ -361,40 +408,44 @@ function Auxiliary.EvoluteRecursiveFilter(c,tp,sg,mg,ec,ct,minc,maxc,gcheck,...)
 		end
 	end
 	if max>99 then max=99 end
-	local res=chk and (not gcheck or gcheck(c,tp,sg,ec,ct,minc,max)) and (Auxiliary.EvoluteCheckGoal(tp,sg,ec,minc,ct,...) or (ct<max and mg:IsExists(Auxiliary.EvoluteRecursiveFilter,1,sg,tp,sg,mg,ec,ct,minc,max,gcheck,...)))
+	local res=chk and (not gcheck or gcheck(c,tp,sg,ec,ct,minc,max)) and (Evolute.EvoluteCheckGoal(tp,sg,ec,minc,ct,...) or (ct<max and mg:IsExists(Evolute.EvoluteRecursiveFilter,1,sg,tp,sg,mg,ec,ct,minc,max,gcheck,...)))
 	sg:RemoveCard(c)
 	if not (c.EvoFakeMaterial and c.EvoFakeMaterial()) then ct=ct-1 end
 	return res
 end
-function Auxiliary.EvoluteCheckGoal(tp,sg,ec,minc,ct,...)
+
+function Evolute.EvoluteCheckGoal(tp,sg,ec,minc,ct,...)
 	local funs,min={...},0
 	for i=1,#funs do
 		if not sg:IsExists(funs[i][1],funs[i][2],nil) then return false end
 		min=min+funs[i][2]
 	end
-	return ct>=min and (ec:IsHasEffect(EFFECT_CONVERGENT_EVOLUTE) or sg:CheckWithSumEqual(Auxiliary.EvoluteValue,ec:GetStage(),ct,ct,ec)) and Duel.GetLocationCountFromEx(tp,tp,sg,ec)>0
+	return ct>=min and (ec:IsHasEffect(EFFECT_CONVERGENT_EVOLUTE) or sg:CheckWithSumEqual(Evolute.EvoluteValue,ec:GetStage(),ct,ct,ec)) and Duel.GetLocationCountFromEx(tp,tp,sg,ec)>0
 end
-function Auxiliary.EvoluteCondition(outdate1,outdate2,min,max,gcheck,...)
+
+function Evolute.EvoluteCondition(outdate1,outdate2,min,max,gcheck,...)
 	local funs={...}
 	return  function(e,c)
 				if c==nil then return true end
 				if (c:IsType(TYPE_PENDULUM) or c:IsType(TYPE_PANDEMONIUM)) and c:IsFaceup() then return false end
 				local tp=c:GetControler()
-				local mg=Auxiliary.GetEvoluteMaterials(c,tp,table.unpack(funs))
-				return mg:IsExists(Auxiliary.EvoluteRecursiveFilter,1,nil,tp,Group.CreateGroup(),mg,c,0,min,max,gcheck,table.unpack(funs))
+				local mg=Evolute.GetEvoluteMaterials(c,tp,table.unpack(funs))
+				return mg:IsExists(Evolute.EvoluteRecursiveFilter,1,nil,tp,Group.CreateGroup(),mg,c,0,min,max,gcheck,table.unpack(funs))
 			end
 end
-function Auxiliary.GetEvoluteMaterials(ec,tp,...)
+
+function Evolute.GetEvoluteMaterials(ec,tp,...)
 	local mg=Duel.GetMatchingGroup(Card.IsCanBeEvoluteMaterial,tp,LOCATION_MZONE+LOCATION_HAND+LOCATION_GRAVE+LOCATION_SZONE+LOCATION_FZONE,LOCATION_MZONE+LOCATION_HAND+LOCATION_GRAVE+LOCATION_SZONE+LOCATION_FZONE,nil,ec)
 	local sg=Group.CreateGroup()
 	local funs={...}
 	for i=1,#funs do sg:Merge(mg:Filter(funs[i][1],nil)) end
 	return sg
 end
-function Auxiliary.EvoluteTarget(outdate1,outdate2,minc,maxc,gcheck,...)
+
+function Evolute.EvoluteTarget(outdate1,outdate2,minc,maxc,gcheck,...)
 	local funs={...}
 	return  function(e,tp,eg,ep,ev,re,r,rp,chk,c)
-				local mg=Auxiliary.GetEvoluteMaterials(c,tp,table.unpack(funs))
+				local mg=Evolute.GetEvoluteMaterials(c,tp,table.unpack(funs))
 				local bg=Group.CreateGroup()
 				local ce={Duel.IsPlayerAffectedByEffect(tp,EFFECT_MUST_BE_EVOLUTE_MATERIAL)}
 				for _,te in ipairs(ce) do
@@ -409,8 +460,8 @@ function Auxiliary.EvoluteTarget(outdate1,outdate2,minc,maxc,gcheck,...)
 				sg:Merge(bg)
 				local finish=false
 				while not (#sg>=maxc) do
-					finish=Auxiliary.EvoluteCheckGoal(tp,sg,c,minc,#sg,table.unpack(funs))
-					local cg=mg:Filter(Auxiliary.EvoluteRecursiveFilter,sg,tp,sg,mg,c,#sg,minc,maxc,gcheck,table.unpack(funs))
+					finish=Evolute.EvoluteCheckGoal(tp,sg,c,minc,#sg,table.unpack(funs))
+					local cg=mg:Filter(Evolute.EvoluteRecursiveFilter,sg,tp,sg,mg,c,#sg,minc,maxc,gcheck,table.unpack(funs))
 					if #cg==0 then break end
 					local cancel=not finish
 					Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_TOGRAVE)
@@ -434,7 +485,8 @@ function Auxiliary.EvoluteTarget(outdate1,outdate2,minc,maxc,gcheck,...)
 				else return false end
 			end
 end
-function Auxiliary.EvoluteOperation(e,tp,eg,ep,ev,re,r,rp,c,smat,mg)
+
+function Evolute.EvoluteOperation(e,tp,eg,ep,ev,re,r,rp,c,smat,mg)
 	if Duel.SetSummonCancelable then Duel.SetSummonCancelable(true) end
 	local g=e:GetLabelObject()
 	c:SetMaterial(g)
@@ -471,11 +523,13 @@ function Auxiliary.EvoluteOperation(e,tp,eg,ep,ev,re,r,rp,c,smat,mg)
 	end
 	g:DeleteGroup()
 end
-function Auxiliary.ECSumFilter(c)
+
+function Evolute.ECSumFilter(c)
 	return c:IsSummonType(SUMMON_TYPE_EVOLUTE) and c:IsType(TYPE_EVOLUTE)
 end
-function Auxiliary.EvoluteCounter(e,tp,eg,ep,ev,re,r,rp,c,smat,mg)
-	local g=eg:Filter(Auxiliary.ECSumFilter,nil)
+
+function Evolute.EvoluteCounter(e,tp,eg,ep,ev,re,r,rp,c,smat,mg)
+	local g=eg:Filter(Evolute.ECSumFilter,nil)
 	for tc in aux.Next(g) do
 		if not tc:IsHasEffect(EFFECT_CONVERGENT_EVOLUTE) then tc:AddEC(tc:GetStage(),tp) end
 		if tc:IsHasEffect(EFFECT_CONVERGENT_EVOLUTE) then 

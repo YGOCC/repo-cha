@@ -1,9 +1,10 @@
 --Cyanusfly of Fiber VINE
 local cid,id=GetID()
+Duel.LoadScript("init.lua")
 function cid.initial_effect(c)
-		 aux.AddOrigEvoluteType(c)
+	Evolute.AddOrigEvoluteType(c)
 	c:EnableReviveLimit()
- aux.AddEvoluteProc(c,nil,6,cid.filter1,cid.filter1,2,99)  
+ 	Evolute.AddEvoluteProc(c,nil,6,cid.filter1,cid.filter1,2,99)  
    --spsummon
 	local e1=Effect.CreateEffect(c)
 	e1:SetDescription(aux.Stringid(id,0))
