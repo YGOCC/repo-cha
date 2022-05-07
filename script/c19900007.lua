@@ -1,6 +1,7 @@
 --Geneseed Cherry Tiger
-	local cid,id=GetID()
 Duel.LoadScript("init.lua")
+	local cid,id=GetID()
+
 function cid.initial_effect(c)
 	Evolute.AddOrigEvoluteType(c)
 	c:EnableReviveLimit()
@@ -17,7 +18,7 @@ function cid.initial_effect(c)
 	e1:SetOperation(cid.drop)
 	c:RegisterEffect(e1)
 	  local e2=Effect.CreateEffect(c)
-	e2:SetDescription(aux.Stringid(86840720,0))
+	e2:SetDescription(aux.Stringid(id,0))
 	e2:SetCategory(CATEGORY_DAMAGE)
 	e2:SetProperty(EFFECT_FLAG_PLAYER_TARGET)
 	e2:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_TRIGGER_F)
