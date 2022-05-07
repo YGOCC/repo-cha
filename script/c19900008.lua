@@ -1,10 +1,10 @@
 --Geneseed Cherry Manticore
 local cid,id=GetID()
---Duel.LoadScript("init.lua")
+Duel.LoadScript("init.lua")
 function cid.initial_effect(c)
-  --  Evolute.AddOrigEvoluteType(c)
+ Evolute.AddOrigEvoluteType(c)
 	c:EnableReviveLimit()
-   -- Evolute.AddEvoluteProc(c,nil,7,cid.filter1,cid.filter2,2,99)  
+  Evolute.AddEvoluteProc(c,nil,7,cid.filter1,cid.filter2,2,99)  
 	--discard deck & draw
 	local e1=Effect.CreateEffect(c)
 	e1:SetDescription(aux.Stringid(id,1))
