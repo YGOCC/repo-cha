@@ -1,5 +1,5 @@
 --Geneseed Cherry Manticore
-	local cid,id=GetID()
+local cid,id=GetID()
 Duel.LoadScript("init.lua")
 function cid.initial_effect(c)
 	Evolute.AddOrigEvoluteType(c)
