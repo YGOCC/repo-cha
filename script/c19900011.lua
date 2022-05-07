@@ -1,5 +1,6 @@
 --Geneseed Cherrabbit
 local cid,id=GetID()
+function cid.initial_effect(c)
    --spsummon
 	local e1=Effect.CreateEffect(c)
 	e1:SetDescription(aux.Stringid(id,0))
