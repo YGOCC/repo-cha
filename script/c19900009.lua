@@ -1,11 +1,13 @@
 --Geneseed Cherritch
 local cid,id=GetID()
+function cid.initial_effect(c)
 	--special summon
 	local e0=Effect.CreateEffect(c)
 	e0:SetType(EFFECT_TYPE_FIELD)
 	e0:SetCode(EFFECT_SPSUMMON_PROC)
 	e0:SetProperty(EFFECT_FLAG_UNCOPYABLE)
 	e0:SetRange(LOCATION_HAND)
+	 e1:SetCountLimit(1,id+1000)
 	e0:SetCondition(cid.spcon)
 	e0:SetOperation(cid.spop)
 	c:RegisterEffect(e0)
