@@ -21,13 +21,19 @@ function cid.initial_effect(c)
 	e2:SetOperation(cid.spop2)
 	c:RegisterEffect(e2)
 end
-function cid.filter(c)
+function cid.xfilter(c)
 	return c:IsFaceup() and c:IsSetCard(0x185a) and not c:IsCode(id)
 end  
 
 function cid.atkfilter2(c)
 	return c:IsFaceup() and c:IsType(TYPE_EVOLUTE)
 end
+function cid.spcon(e,c)
+	if c==nil then return true end
+	return Duel.GetLocationCount(c:GetControler(),LOCATION_MZONE)>0 and
+		Duel.IsExistingMatchingCard(cid.xfilter,c:GetControler(),LOCATION_MZONE,0,1,nil)
+end
+
 function cid.sptg2(e,tp,eg,ep,ev,re,r,rp,chk)
   if chkc then return chkc:IsLocation(LOCATION_MZONE) and chkc:IsControler(tp) and cid.atkfilter2(chkc) end
 	if chk==0 then return Duel.IsExistingTarget(cid.atkfilter2,tp,LOCATION_MZONE,0,1,nil) end
