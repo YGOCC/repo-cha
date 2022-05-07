@@ -24,6 +24,7 @@ function cid.initial_effect(c)
 	e2:SetCode(EVENT_TO_GRAVE)
 	e2:SetCountLimit(1,id+100)
 	e2:SetRange(LOCATION_MZONE)
+	e2:SetCondition(cid.spcon)
 	e2:SetTarget(cid.sptg)
 	e2:SetOperation(cid.spop)
 	c:RegisterEffect(e2)
@@ -62,6 +63,9 @@ end
 
 function cid.filter(c,e,tp)
 	return  (c:IsPreviousLocation(LOCATION_HAND) or c:IsPreviousLocation(LOCATION_DECK)) and c:IsControler(tp)
+end
+function cid.spcon(e,tp,eg,ep,ev,re,r,rp)
+	return eg:IsExists(cid.filter,1,nil,tp) and not eg:IsContains(e:GetHandler())
 end
 function cid.sptg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
    if chk==0 then return true end
