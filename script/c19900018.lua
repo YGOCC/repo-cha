@@ -61,7 +61,7 @@ function cid.filter2(c,ec,tp)
 end
 
 
-function cid.filter(c,e,tp)
+function cid.filter(c,tp)
 	return  (c:IsPreviousLocation(LOCATION_HAND) or c:IsPreviousLocation(LOCATION_DECK)) and c:IsControler(tp)
 end
 function cid.spcon(e,tp,eg,ep,ev,re,r,rp)
