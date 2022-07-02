@@ -39,7 +39,7 @@ function cid.spop(e,tp,eg,ep,ev,re,r,rp,c)
 end
 
 function cid.filter(c,e,tp)
-	return c:IsSetCard(0x85a) and not c:IsCode(id) and c:IsCanBeSpecialSummoned(e,0,tp,true,true)
+	return c:IsSetCard(0x57b) and not c:IsCode(id) and c:IsCanBeSpecialSummoned(e,0,tp,true,true)
 end
 function cid.sptg2(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	  if chkc then return chkc:IsLocation(LOCATION_GRAVE) and chkc:IsControler(tp) and cid.filter(chkc,e,tp) end

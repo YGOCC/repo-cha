@@ -27,7 +27,7 @@ function cid.initial_effect(c)
 	c:RegisterEffect(e4)
 end
 function cid.atktg(e,c)
-	return c:GetFieldID()<=e:GetLabel() and c:IsSetCard(0x85a)
+	return c:GetFieldID()<=e:GetLabel() and c:IsSetCard(0x57b)
 end
 function cid.operation(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()

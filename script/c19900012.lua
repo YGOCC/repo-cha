@@ -22,7 +22,7 @@ function cid.initial_effect(c)
 	c:RegisterEffect(e2)
 end
 function cid.xfilter(c)
-	return c:IsFaceup() and c:IsSetCard(0x185a) and not c:IsCode(id)
+	return c:IsFaceup() and c:IsSetCard(0x57b) and not c:IsCode(id)
 end  
 
 function cid.atkfilter2(c)

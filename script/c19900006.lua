@@ -29,17 +29,17 @@ function cid.initial_effect(c)
 
 end
 function cid.tg1(e,c)
-	return c:IsSetCard(0x185a)
+	return c:IsSetCard(0x57b)
 end
 function cid.tg2(e,c)
-	return not c:IsSetCard(0x185a)
+	return not c:IsSetCard(0x57b)
 end
 function cid.thcost(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return e:GetHandler():IsAbleToRemoveAsCost() end
 	Duel.Remove(e:GetHandler(),POS_FACEUP,REASON_COST)
 end
 function cid.thfilter(c)
-	return c:IsSetCard(0x185a) and c:IsType(TYPE_MONSTER) and c:IsAbleToHand()
+	return c:IsSetCard(0x57b) and c:IsType(TYPE_MONSTER) and c:IsAbleToHand()
 end
 function cid.thtg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return not e:GetHandler():IsLocation(LOCATION_DECK)
