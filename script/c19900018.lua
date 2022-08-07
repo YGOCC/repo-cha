@@ -5,6 +5,7 @@ function cid.initial_effect(c)
 	Evolute.AddOrigEvoluteType(c)
 	c:EnableReviveLimit()
 	Evolute.AddEvoluteProc(c,nil,7,cid.filter1,cid.filter2,2,99)  
+
 	--discard deck & draw
 	local e1=Effect.CreateEffect(c)
 	e1:SetDescription(aux.Stringid(id,1))

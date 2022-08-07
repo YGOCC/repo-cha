@@ -1,4 +1,3 @@
---Cherry Queen of Fiber VINE
 local cid,id=GetID()
 Duel.LoadScript("init.lua")
 function cid.initial_effect(c)
